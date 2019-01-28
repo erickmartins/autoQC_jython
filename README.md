@@ -1,4 +1,4 @@
-# Project Title
+# autoQC
 
 This repo contains a set of scripts developed by [CAMDU](www.warwick.ac.uk) to help automate quality control tasks on our microscopes. 
 
