@@ -1,27 +1,24 @@
 #@ File    (label = "Input directory", style = "directory") srcFile
 #@ String  (label = "File extension", value=".dv") ext
-#@ Integer  (label = "Number of beads", value=10) beads
-#@ Float  (label = "Correction Factor (x)", value=1.186) corr_factor_x
-#@ Float  (label = "Correction Factor (y)", value=1.186) corr_factor_y
-#@ Float  (label = "Correction Factor (z)", value=1.186) corr_factor_z
+#@ Integer  (label = "Number of beads", value=1) beads
+#
 
 
 """
 
-auto_PSF.py 
+auto_coloc.py 
 created by: Erick Martins Ratamero
 date: 25/01/19
 last updated: 24/01/19
 
 Finds the relevant image with beads in the input
 directory, crops a number of beads and uses MetroloJ
-to generate resolution values.
+to generate colocalization/drift values.
 
 Inputs:
 - Input directory: where the input file is (the input image should contain the string "psf")
 - File extension: self-explanatory
 - Number of beads: how many beads should be analysed
-- Correction factors: multiplying factor for the FWHM resolution output from MetroloJ, per dimension
 
 """
 
@@ -80,7 +77,7 @@ for counter in range(len(folders)):
 		path = os.path.join(srcDir, filename)
 	
 		# use the Bioformats importer to open image
-		IJ.run("Bio-Formats Importer", "open='" + path + "' autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
+		IJ.run("Bio-Formats Importer", "open=" + path + " autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
 		
 		directory = srcDir
 		
