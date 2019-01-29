@@ -46,7 +46,7 @@ for root, directories, filenames in os.walk(srcDir):
     
 #creates output file and writes header
 outputfile = open(str(srcFile)+"/summary_fovs.csv", "w")
-outputfile.write("objective \t intensity \n")
+outputfile.write("objective,intensity \n")
 
 
 
@@ -68,7 +68,7 @@ for counter in range(len(folders)):
 		path = os.path.join(srcDir, filename)
 	
 		# use the Bioformats importer to open image
-		IJ.run("Bio-Formats Importer", "open=" + path + " autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
+		IJ.run("Bio-Formats Importer", "open='" + path + "' autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
 
 		#creates a variable for the filename without extension that will be used as an "ID"
 		filename_no_ext = filename.split(".")[0]
@@ -86,7 +86,7 @@ for counter in range(len(folders)):
 		pdf = os.path.join(str(srcFile),filename_no_ext+".pdf")
 
 		# runs MetroloJ in field illumination mode		
-		IJ.run("Generate field illumination report", "steps=10 microscope=WideField wavelength=500 na=1.40 pinhole=1 text1=[Sample infos:\n] text2=Comments:\n scale=5 save save=["+pdf+"]");
+		IJ.run("Generate field illumination report", "steps=10 microscope=WideField wavelength=500 na=1.40 pinhole=1 text1=[Sample infos:\n] text2=Comments:\n scale=5 save save=['"+pdf+"']");
 
 		# close the image
 		image.close()
@@ -104,7 +104,7 @@ for counter in range(len(folders)):
 		
 
 		# writes new line to the summary output with min value of the list
-		outputfile.write(filename_no_ext+"\t"+str(min(corners))+"\n")
+		outputfile.write(filename_no_ext+","+str(min(corners))+"\n")
 		
 
 		

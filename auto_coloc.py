@@ -77,7 +77,7 @@ for counter in range(len(folders)):
 		path = os.path.join(srcDir, filename)
 	
 		# use the Bioformats importer to open image
-		IJ.run("Bio-Formats Importer", "open=" + path + " autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
+		IJ.run("Bio-Formats Importer", "open='" + path + "' autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
 		
 		directory = srcDir
 		
@@ -109,17 +109,13 @@ for counter in range(len(folders)):
 				#print(i,infocus,maxstddev)
 	
 		# we set the relevant z-slice to be the maximum std dev one and get
-		# that "stack" (it's a single slice)
-		zslice = infocus
-		findbeads = stack.getProcessor(zslice)
-		
-		# we create a new image from that z-slice and display it
-		im_slice = ImagePlus("stack", findbeads)
-		im_slice.show()
+		# that stack (multiple channels)
+		IJ.run("Duplicate...", "duplicate slices="+str(zslice))
+		im_slice = IJ.getImage()
 
 		# creating the output summary file and writing headers
 		outputfile = open(str(srcFile)+"/summary_psfs.csv", "w")
-		outputfile.write("bead_id \t x_resolution \t y_resolution \t z_resolution \n")
+		outputfile.write("bead_id,x_resolution,y_resolution,z_resolution \n")
 		
 		# make sure the results window is clear
 		IJ.run("Clear Results")
@@ -192,7 +188,7 @@ for counter in range(len(folders)):
 
 			# close the tiny crop
 			IJ.selectWindow("duplicate_spot")
-			image_2.close()
+			#image_2.close()
 
 			# open output from MetroloJ
 			f = open(directory + "/psf_bead_"+str(count) + "_summary.xls")
@@ -204,13 +200,13 @@ for counter in range(len(folders)):
 			z_res = float(text[3].split("\t")[1].split(" ")[0]) * corr_factor_z
 
 			# writes new line to the summary output
-			outputfile.write(str(count)+"\t"+str(x_res)+"\t"+str(y_res)+"\t"+str(z_res)+"\n")
+			outputfile.write(str(count)+","+str(x_res)+","+str(y_res)+","+str(z_res)+"\n")
 			f.close()
 
 		# close everything else!
-		im_slice.close()
+		#im_slice.close()
 		image.changes = False
-		image.close()		
+		#image.close()		
 		IJ.selectWindow("Results"); 
 		IJ.run("Close");
 		

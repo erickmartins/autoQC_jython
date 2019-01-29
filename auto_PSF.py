@@ -122,7 +122,7 @@ for counter in range(len(folders)):
 
 		# creating the output summary file and writing headers
 		outputfile = open(str(srcFile)+"/summary_psfs.csv", "w")
-		outputfile.write("bead_id \t x_resolution \t y_resolution \t z_resolution \n")
+		outputfile.write("bead_id,x_resolution,y_resolution,z_resolution \n")
 		
 		# make sure the results window is clear
 		IJ.run("Clear Results")
@@ -191,7 +191,7 @@ for counter in range(len(folders)):
 			directory = os.path.join(str(srcFile),"psf_bead_"+str(count))
 
 			# run automated MetroloJ, save results + PDF
-			IJ.run("Generate PSF report", "microscope=WideField wavelength=500 na=1.40 pinhole=1 text1=[Sample infos:\n] text2=Comments:\n scale=5 save save=["+filename+"]")
+			IJ.run("Generate PSF report", "microscope=WideField wavelength=500 na=1.40 pinhole=1 text1=[Sample infos:\n] text2=Comments:\n scale=5 save save=['"+filename+"']")
 
 			# close the tiny crop
 			IJ.selectWindow("duplicate_spot")
@@ -207,7 +207,7 @@ for counter in range(len(folders)):
 			z_res = float(text[3].split("\t")[1].split(" ")[0]) * corr_factor_z
 
 			# writes new line to the summary output
-			outputfile.write(str(count)+"\t"+str(x_res)+"\t"+str(y_res)+"\t"+str(z_res)+"\n")
+			outputfile.write(str(count)+","+str(x_res)+","+str(y_res)+","+str(z_res)+"\n")
 			f.close()
 
 		# close everything else!
