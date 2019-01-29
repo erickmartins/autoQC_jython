@@ -6,6 +6,7 @@ This repo contains a set of scripts developed by [CAMDU](http://www.warwick.ac.u
 ## Getting Started
 
 auto_PSF.py - Just download it and run inside Fiji. It will look for files containing the string "psf" on their filenames and run for the number of beads required on those. The output is "summary_psf.csv" with one line per bead containing X/Y/Z resolution in um.
+
 auto_FOV.py - Just download it and run inside Fiji. It will look for files containing the string "fov" on their filenames and run on those, with one line output for each file. The output is "summary_fov.csv" with one line per FOV image, containing the relative intensity of the dimmest corner compared to the centre.
 
 ### Prerequisites
