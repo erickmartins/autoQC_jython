@@ -9,11 +9,11 @@ auto_PSF.py - Just download it and run inside Fiji. It will look for files conta
 
 auto_FOV.py - Just download it and run inside Fiji. It will look for files containing the string "fov" on their filenames and run on those, with one line output for each file. The output is "summary_fov.csv" with one line per FOV image, containing the relative intensity of the dimmest corner compared to the centre.
 
+auto_coloc.py - Just download it and run inside Fiji. It will look for files containing the string "coloc" on their filenames and run on those, with one line output for each file. The output is "summary_coloc.csv" with one line per objective image, containing the distance between channels. WARNING: this will not work if there are any spaces on your directory structure where the images are!
+
 ### Prerequisites
 
-auto_PSF.py - requires [MetroloJ](http://imagejdocu.tudor.lu/doku.php?id=plugin:analysis:metroloj:start) installed with the [iText library v.2.1.4](http://imagejdocu.tudor.lu/lib/exe/fetch.php?media=plugin:analysis:metroloj:itext-2.1.4.jar). Newest Fiji version is always recommended.
-auto_FOV.py - requires [MetroloJ](http://imagejdocu.tudor.lu/doku.php?id=plugin:analysis:metroloj:start) installed with the [iText library v.2.1.4](http://imagejdocu.tudor.lu/lib/exe/fetch.php?media=plugin:analysis:metroloj:itext-2.1.4.jar). Newest Fiji version is always recommended.
-
+auto_PSF.py, auto_FOV.py, auto_coloc.py - requires [MetroloJ](http://imagejdocu.tudor.lu/doku.php?id=plugin:analysis:metroloj:start) installed with the [iText library v.2.1.4](http://imagejdocu.tudor.lu/lib/exe/fetch.php?media=plugin:analysis:metroloj:itext-2.1.4.jar). Newest Fiji version is always recommended.
 
 ## Contributing
 
