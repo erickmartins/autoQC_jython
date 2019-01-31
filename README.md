@@ -11,9 +11,13 @@ auto_FOV.py - Just download it and run inside Fiji. It will look for files conta
 
 auto_coloc.py - Just download it and run inside Fiji. It will look for files containing the string "coloc" on their filenames and run on those. The output is "summary_coloc.csv", with one line output for each file and bead containing the distance between channels. WARNING: this will not work if there are any spaces on your directory structure where the images are!
 
+auto_stagerepro.py - Just download it and run inside Fiji. It will look for files containing the string "stage" on their filenames and run on those. The output is "summary_stagerepro.csv", with one line output for each file containing the maximum drift over the timelapse. 
+
 ### Prerequisites
 
 auto_PSF.py, auto_FOV.py, auto_coloc.py - requires [MetroloJ](http://imagejdocu.tudor.lu/doku.php?id=plugin:analysis:metroloj:start) installed with the [iText library v.2.1.4](http://imagejdocu.tudor.lu/lib/exe/fetch.php?media=plugin:analysis:metroloj:itext-2.1.4.jar). Newest Fiji version is always recommended.
+
+auto_stagerepro.py - requires [TrackMate](https://imagej.net/TrackMate), which should be available through Fiji.
 
 ## Contributing
 
