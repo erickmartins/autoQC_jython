@@ -29,20 +29,14 @@ import os
 from java.io import File
 
 from ij import IJ, ImageStack, ImagePlus
-from ij.plugin.frame import RoiManager
-import math
-from ij import WindowManager
 from ij.measure import ResultsTable
 from loci.plugins import BF
-from ij.io import FileSaver 
 from ij.process import ImageStatistics as IS  
 
 
 
 #get absolute path of the input folder
 srcDir = srcFile.getAbsolutePath()
-
-#define minimum separation between beads in pixels
 
 
 # the the list of file names in the input directory
@@ -59,6 +53,7 @@ for root, directories, filenames in os.walk(srcDir):
 #we make sure that certain measurements are set
 IJ.run("Set Measurements...", "min centroid integrated redirect=None decimal=3");
 
+# create output file, write header
 outputfile = open(str(srcFile)+"/summary_coloc.csv", "w")
 outputfile.write("file_id,bead_id,red-green,green-blue,red-blue \n")
 
@@ -85,14 +80,16 @@ for counter in range(len(folders)):
 		directory = srcDir
 		
 		
-		# get stack from current image, cropping the centre of it
+		# get stack from current image, cropping the centre of it (assumes 1024x1024 - should be changed to take actual info from image)
 		
 		IJ.run("Specify...", "width=300 height=300 x=512 y=512 slice=1 centered");
 		IJ.run("Crop");
 		image = IJ.getImage()
 		stack = image.getStack()
 		title = image.getTitle()
-		print(image.getTitle())
+		#print(image.getTitle())
+
+		#define minimum separation between beads using the existing calibration (currently equivalent to 15px)
 		min_separation = 15 * image.getCalibration().getX(1)
 		
 		
@@ -121,9 +118,6 @@ for counter in range(len(folders)):
 		im_slice = IJ.getImage()
 		
 		
-		# creating the output summary file and writing headers
-		
-		
 		# make sure the results window is clear
 		IJ.run("Clear Results")
 
@@ -139,11 +133,15 @@ for counter in range(len(folders)):
 		# the number of beads we want to look at, we're done
 		done = 0
 
+		# close the single slice image used to find beads (we don't need any more)
 		im_slice.changes = False
 		im_slice.close()
 
+
+		# close original image due to MetroloJ weirdness with extra images being open
 		image.changes = False
 		image.close()
+		
 		# this for loop goes over all beads
 		for count in range(rt.size()):
 			# break condition for the number of beads we want to see
@@ -169,19 +167,22 @@ for counter in range(len(folders)):
 				order = rt.size()-other-1
 				x_2 = float(rt.getValue("X",order))
 				y_2 = float(rt.getValue("Y", order))
+				
 				# calculate distance between this bead and the one from the main loop...
 				dist_sq = (x - x_2)**2 + (y - y_2)**2
 				
 				# and if they are too close (and are not the same bead), mark is as invalid
 				if (x_2 != x and y_2 != y and dist_sq < min_separation**2):
 					valid = 0
-			print(x,y,valid)
+			
 			# if this main loop bead is invalid, skip it
 			if (valid == 0):
 				continue
 			# if it's valid, increase the done counter and actually generate PSF stuff
 			else:
 				done = done + 1
+			# re-open original image because we need to crop it around the bead
+			# to make sure our coordinates are right, we first crop to 300x300 just like before
 			IJ.run("Bio-Formats Importer", "open='" + path + "' autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
 			IJ.run("Specify...", "width=300 height=300 x=512 y=512 slice=1 centered");
 			IJ.run("Crop");
@@ -197,7 +198,7 @@ for counter in range(len(folders)):
 			image_2 = IJ.getImage()
 			image_2.setTitle("duplicate_spot")
 
-			# we crop a 20x20px area centered at the bead
+			# we crop a 50x50px area centered at the bead
 			IJ.run(image_2, "Specify...", "width=50 height=50 x="+str(x/image.getCalibration().getX(1))+" y="+str(y/image.getCalibration().getY(1))+" slice=1 centered")
 			IJ.run("Crop")
 
@@ -205,11 +206,13 @@ for counter in range(len(folders)):
 			filename = os.path.join(str(srcFile),str(title)+"_coloc_bead_"+str(count)+".pdf")
 			directory = os.path.join(str(srcFile),str(title)+"_coloc_bead_"+str(count))
 
-
+			# we're only doing it on the first 3 channels, so we split channels (MetroloJ requirement) and close the fourth one
 			IJ.run("Split Channels");
 			IJ.selectWindow("C4-duplicate_spot")
 			IJ.getImage().close()
 
+
+			# close original image again because MetroloJ is annoying
 			image.changes = False
 			image.close()
 			
@@ -219,7 +222,7 @@ for counter in range(len(folders)):
 
 			
 			
-			# close the tiny crop
+			# close the tiny crops
 			IJ.selectWindow("C1-duplicate_spot")
 			IJ.getImage().close()
 			IJ.selectWindow("C2-duplicate_spot")
@@ -234,13 +237,13 @@ for counter in range(len(folders)):
 
 			
 
-			# parses from XLS to a float, multiply by the correction factor
+			# parses from XLS to a float
 			rg = float(text[14].split("\t")[2].split("(")[0]) 
 			gb = float(text[15].split("\t")[3].split("(")[0]) 
 			rb = float(text[14].split("\t")[3].split("(")[0]) 
 
 			# writes new line to the summary output
-			print(str(title)+","+str(count)+","+str(rg)+","+str(gb)+","+str(rb)+"\n")
+			
 			outputfile.write(str(title)+","+str(count)+","+str(rg)+","+str(gb)+","+str(rb)+"\n")
 			f.close()
 
